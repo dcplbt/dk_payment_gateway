@@ -19,7 +19,7 @@ This document provides comprehensive examples for all API operations supported b
 require 'dk_payment_gateway'
 
 DkPaymentGateway.configure do |config|
-  config.base_url = "http://internal-gateway.uat.digitalkidu.bt/api/dkpg"
+  config.base_url = "https://internal-gateway.uat.digitalkidu.bt/api/dkpg"
   config.api_key = "98cf3639-df33-4587-9d36-dae9d2bb974c"
   config.username = "your_username"
   config.password = "your_password"
@@ -46,7 +46,7 @@ client.authenticate!
 # export DK_CLIENT_SECRET="your_client_secret"
 
 DkPaymentGateway.configure do |config|
-  config.base_url = ENV['DK_BASE_URL'] || "http://internal-gateway.uat.digitalkidu.bt/api/dkpg"
+  config.base_url = ENV['DK_BASE_URL'] || "https://internal-gateway.uat.digitalkidu.bt/api/dkpg"
   config.api_key = ENV['DK_API_KEY']
   config.username = ENV['DK_USERNAME']
   config.password = ENV['DK_PASSWORD']
@@ -82,18 +82,18 @@ begin
     remitter_account_name: "Customer Name",
     remitter_bank_id: "1040"
   )
-  
+
   puts "Authorization successful!"
   puts "Transaction ID: #{auth_response['bfs_txn_id']}"
   puts "STAN: #{auth_response['stan_number']}"
-  
+
   # Store the transaction ID for the debit request
   bfs_txn_id = auth_response['bfs_txn_id']
-  
+
   # Step 3: Customer receives OTP and provides it
   # In a real application, you would collect this from the user
   otp = "123456" # Customer's OTP
-  
+
   # Step 4: Complete the payment with OTP
   debit_response = client.pull_payment.debit(
     request_id: "REQ_#{Time.now.to_i}_#{SecureRandom.hex(4)}",
@@ -101,7 +101,7 @@ begin
     bfs_remitter_otp: otp,
     bfs_order_no: "ORD123456"
   )
-  
+
   if debit_response['code'] == '00'
     puts "Payment completed successfully!"
     puts "Transaction ID: #{debit_response['bfs_txn_id']}"
@@ -109,7 +109,7 @@ begin
   else
     puts "Payment failed: #{debit_response['description']}"
   end
-  
+
 rescue DkPaymentGateway::TransactionError => e
   puts "Transaction error: #{e.message}"
   puts "Error code: #{e.response_code}"
@@ -148,14 +148,14 @@ begin
     source_account_name: "Rinzin Jamtsho",
     source_account_number: "100100365856"
   )
-  
+
   puts "Account inquiry successful!"
   puts "Inquiry ID: #{inquiry_response['inquiry_id']}"
   puts "Beneficiary Name: #{inquiry_response['account_name']}"
-  
+
   # Step 2: Proceed with fund transfer
   inquiry_id = inquiry_response['inquiry_id']
-  
+
   transfer_response = client.intra_transaction.fund_transfer(
     request_id: "TXN_#{Time.now.to_i}_#{SecureRandom.hex(4)}",
     inquiry_id: inquiry_id,
@@ -170,10 +170,10 @@ begin
     bene_bank_code: "1060",
     narration: "Salary payment for October 2025"
   )
-  
+
   puts "Transfer initiated successfully!"
   puts "Transaction Status ID: #{transfer_response['txn_status_id']}"
-  
+
 rescue DkPaymentGateway::TransactionError => e
   puts "Transfer failed: #{e.message}"
   puts "Error code: #{e.response_code}"
@@ -203,7 +203,7 @@ transfers.each do |transfer|
       bene_account_number: transfer[:account],
       source_account_number: "100100365856"
     )
-    
+
     # Step 2: Fund transfer
     result = client.intra_transaction.fund_transfer(
       request_id: "TXN_#{Time.now.to_i}_#{SecureRandom.hex(4)}",
@@ -218,15 +218,15 @@ transfers.each do |transfer|
       bene_bank_code: "1060",
       narration: transfer[:narration]
     )
-    
+
     results << { account: transfer[:account], status: "success", txn_id: result['txn_status_id'] }
     puts "✓ Transfer to #{transfer[:account]}: Success"
-    
+
   rescue DkPaymentGateway::Error => e
     results << { account: transfer[:account], status: "failed", error: e.message }
     puts "✗ Transfer to #{transfer[:account]}: Failed - #{e.message}"
   end
-  
+
   # Add delay between requests to avoid rate limiting
   sleep 1
 end
@@ -251,12 +251,12 @@ begin
     mcc_code: "5411", # Grocery store
     remarks: "Payment to Merchant Store"
   )
-  
+
   # Save QR code image
   filename = "static_qr_#{Time.now.to_i}.png"
   client.qr_payment.save_qr_image(qr_response['image'], filename)
   puts "Static QR code saved to #{filename}"
-  
+
 rescue DkPaymentGateway::Error => e
   puts "QR generation failed: #{e.message}"
 end
@@ -275,13 +275,13 @@ begin
     mcc_code: "5812", # Restaurant
     remarks: "Invoice #INV-2025-001"
   )
-  
+
   # Save QR code image
   filename = "invoice_qr_#{Time.now.to_i}.png"
   client.qr_payment.save_qr_image(qr_response['image'], filename)
   puts "Dynamic QR code saved to #{filename}"
   puts "Amount: BTN 250.50"
-  
+
 rescue DkPaymentGateway::Error => e
   puts "QR generation failed: #{e.message}"
 end
@@ -298,14 +298,14 @@ begin
     transaction_id: "test_txn_update23567",
     bene_account_number: "100100365856"
   )
-  
+
   puts "Transaction Status:"
   puts "Status: #{status['status']['status_desc']}"
   puts "Amount: BTN #{status['status']['amount']}"
   puts "Timestamp: #{status['status']['txn_ts']}"
   puts "Debit Account: #{status['status']['debit_account']}"
   puts "Credit Account: #{status['status']['credit_account']}"
-  
+
 rescue DkPaymentGateway::TransactionError => e
   puts "Status check failed: #{e.message}"
 end
@@ -321,7 +321,7 @@ begin
     transaction_date: "2025-09-18",
     bene_account_number: "100100365856"
   )
-  
+
   if status.is_a?(Array)
     status.each do |txn|
       puts "Transaction found:"
@@ -330,7 +330,7 @@ begin
       puts "  Date: #{txn['txn_ts']}"
     end
   end
-  
+
 rescue DkPaymentGateway::TransactionError => e
   puts "Status check failed: #{e.message}"
 end
@@ -346,11 +346,11 @@ class PaymentProcessor
     @client = DkPaymentGateway.client
     @client.authenticate!
   end
-  
+
   def process_order_payment(order)
     # Step 1: Initiate payment authorization
     stan = DkPaymentGateway::PullPayment.generate_stan("0201")
-    
+
     auth_response = @client.pull_payment.authorize(
       transaction_datetime: Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
       stan_number: stan,
@@ -365,14 +365,14 @@ class PaymentProcessor
       remitter_account_name: order[:customer_name],
       remitter_bank_id: order[:customer_bank_id]
     )
-    
+
     # Store transaction ID
     order[:bfs_txn_id] = auth_response['bfs_txn_id']
-    
+
     # Return transaction ID to customer for OTP entry
     auth_response
   end
-  
+
   def complete_payment(order, otp)
     debit_response = @client.pull_payment.debit(
       request_id: "ORD_#{order[:order_id]}_#{Time.now.to_i}",
@@ -380,7 +380,7 @@ class PaymentProcessor
       bfs_remitter_otp: otp,
       bfs_order_no: order[:order_id]
     )
-    
+
     if debit_response['code'] == '00'
       # Payment successful - update order status
       update_order_status(order[:order_id], 'paid')
@@ -392,26 +392,26 @@ class PaymentProcessor
       false
     end
   end
-  
+
   private
-  
+
   def calculate_fee(amount)
     # Example fee calculation
     [amount * 0.01, 5.0].max # 1% with minimum 5 BTN
   end
-  
+
   def merchant_account
     "110158212197"
   end
-  
+
   def merchant_name
     "My E-commerce Store"
   end
-  
+
   def update_order_status(order_id, status)
     # Update in database
   end
-  
+
   def send_confirmation_email(order)
     # Send email
   end
@@ -451,22 +451,22 @@ end
 def safe_payment_operation
   client = DkPaymentGateway.client
   client.authenticate!
-  
+
   # Your payment logic here
-  
+
 rescue DkPaymentGateway::ConfigurationError => e
   log_error("Configuration issue", e)
   notify_admin("Payment gateway configuration error: #{e.message}")
-  
+
 rescue DkPaymentGateway::AuthenticationError => e
   log_error("Authentication failed", e)
   # Retry authentication or notify admin
-  
+
 rescue DkPaymentGateway::InvalidParameterError => e
   log_error("Invalid parameters", e)
   # Return user-friendly error message
   { error: "Invalid payment details", details: e.response_detail }
-  
+
 rescue DkPaymentGateway::TransactionError => e
   log_error("Transaction failed", e)
   # Handle based on error code
@@ -478,14 +478,13 @@ rescue DkPaymentGateway::TransactionError => e
   else
     { error: "Transaction failed", code: e.response_code }
   end
-  
+
 rescue DkPaymentGateway::NetworkError => e
   log_error("Network error", e)
   # Retry logic or queue for later
-  
+
 rescue DkPaymentGateway::Error => e
   log_error("General payment gateway error", e)
   { error: "Payment processing error" }
 end
 ```
-

@@ -33,7 +33,7 @@ Configure the gem with your API credentials:
 
 ```ruby
 DkPaymentGateway.configure do |config|
-  config.base_url = "http://internal-gateway.uat.digitalkidu.bt/api/dkpg"
+  config.base_url = "https://internal-gateway.uat.digitalkidu.bt/api/dkpg"
   config.api_key = "98cf3639-df33-4587-9d36-dae9d2bb974c"
   config.username = "your_username"
   config.password = "your_password"
@@ -293,4 +293,3 @@ Bug reports and pull requests are welcome on GitHub.
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-

@@ -426,7 +426,7 @@ end
 ```ruby
 # config/environments/development.rb
 DkPaymentGateway.configure do |config|
-  config.base_url = "http://internal-gateway.uat.digitalkidu.bt/api/dkpg"
+  config.base_url = "https://internal-gateway.uat.digitalkidu.bt/api/dkpg"
   # ... UAT credentials
 end
 ```

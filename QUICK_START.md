@@ -21,7 +21,7 @@ require 'dk_payment_gateway'
 
 # Configure
 DkPaymentGateway.configure do |config|
-  config.base_url = "http://internal-gateway.uat.digitalkidu.bt/api/dkpg"
+  config.base_url = "https://internal-gateway.uat.digitalkidu.bt/api/dkpg"
   config.api_key = "your_api_key"
   config.username = "your_username"
   config.password = "your_password"
@@ -149,7 +149,7 @@ end
 Create a `.env` file:
 
 ```bash
-DK_BASE_URL=http://internal-gateway.uat.digitalkidu.bt/api/dkpg
+DK_BASE_URL=https://internal-gateway.uat.digitalkidu.bt/api/dkpg
 DK_API_KEY=your_api_key
 DK_USERNAME=your_username
 DK_PASSWORD=your_password
@@ -183,4 +183,3 @@ end
 ## Support
 
 For issues and questions, please refer to the documentation or contact support.
-

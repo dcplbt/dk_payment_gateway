@@ -7,13 +7,15 @@ This directory contains example applications demonstrating how to use the DK Pay
 Before running these examples, make sure you have:
 
 1. Installed the gem:
+
    ```bash
    gem install dk_payment_gateway
    ```
 
 2. Set up your environment variables in a `.env` file:
+
    ```bash
-   DK_BASE_URL=http://internal-gateway.uat.digitalkidu.bt/api/dkpg
+   DK_BASE_URL=https://internal-gateway.uat.digitalkidu.bt/api/dkpg
    DK_API_KEY=your_api_key
    DK_USERNAME=your_username
    DK_PASSWORD=your_password
@@ -32,17 +34,20 @@ Before running these examples, make sure you have:
 ### 1. Simple Payment (`simple_payment.rb`)
 
 Demonstrates a complete pull payment flow:
+
 - Authentication
 - Payment authorization (sends OTP)
 - OTP collection from user
 - Payment completion with OTP
 
 **Run:**
+
 ```bash
 ruby examples/simple_payment.rb
 ```
 
 **What it does:**
+
 1. Authenticates with the API
 2. Initiates a payment authorization for BTN 100.00
 3. Prompts for OTP
@@ -51,16 +56,19 @@ ruby examples/simple_payment.rb
 ### 2. Intra-Bank Transfer (`intra_transfer.rb`)
 
 Demonstrates transferring funds between DK accounts:
+
 - Account verification
 - Fund transfer
 - Transaction confirmation
 
 **Run:**
+
 ```bash
 ruby examples/intra_transfer.rb
 ```
 
 **What it does:**
+
 1. Authenticates with the API
 2. Verifies beneficiary account
 3. Asks for confirmation
@@ -69,16 +77,19 @@ ruby examples/intra_transfer.rb
 ### 3. QR Code Generation (`generate_qr.rb`)
 
 Demonstrates generating QR codes for payments:
+
 - Static QR (customer enters amount)
 - Dynamic QR (fixed amount)
 - QR image saving
 
 **Run:**
+
 ```bash
 ruby examples/generate_qr.rb
 ```
 
 **What it does:**
+
 1. Authenticates with the API
 2. Asks user to choose QR type
 3. Generates QR code
@@ -124,10 +135,12 @@ remitter_bank_id: "1040"  # 1010, 1040, 1060, etc.
 All examples include error handling. If you encounter errors:
 
 1. **Authentication Error**
+
    - Check your credentials in .env file
    - Verify API endpoint is accessible
 
 2. **Transaction Error**
+
    - Check account numbers are valid
    - Verify sufficient balance
    - Ensure OTP is correct
@@ -190,10 +203,10 @@ If you encounter issues with these examples:
 ⚠️ **Never commit your `.env` file or credentials to version control!**
 
 Add to your `.gitignore`:
+
 ```
 .env
 .env.*
 *.pem
 *.key
 ```
-

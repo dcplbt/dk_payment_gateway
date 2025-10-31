@@ -90,7 +90,7 @@ bundle exec rubocop -a
 Create a `.env.test` file:
 
 ```bash
-DK_BASE_URL=http://internal-gateway.uat.digitalkidu.bt/api/dkpg
+DK_BASE_URL=https://internal-gateway.uat.digitalkidu.bt/api/dkpg
 DK_API_KEY=your_test_api_key
 DK_USERNAME=your_test_username
 DK_PASSWORD=your_test_password
@@ -206,7 +206,7 @@ def sign_request(request_body, timestamp, nonce)
   puts "Request Body: #{request_body.inspect}"
   puts "Timestamp: #{timestamp}"
   puts "Nonce: #{nonce}"
-  
+
   # ... rest of method
 end
 ```
@@ -252,11 +252,13 @@ gem push dk_payment_gateway-0.1.0.gem
 ### Issue: Authentication Fails
 
 **Check:**
+
 - Credentials are correct
 - API key is valid
 - Network connectivity to API endpoint
 
 **Debug:**
+
 ```ruby
 begin
   client.authenticate!
@@ -269,11 +271,13 @@ end
 ### Issue: Signature Validation Fails
 
 **Check:**
+
 - Private key is correctly fetched
 - Request body is properly serialized
 - Timestamp is in correct format
 
 **Debug:**
+
 ```ruby
 # Enable signature debugging
 signature = DkPaymentGateway::Signature.new(private_key)
@@ -338,7 +342,7 @@ RSpec.describe "Payment" do
     stub_request(:post, /.*\/v1\/account_auth\/pull-payment/)
       .to_return(status: 200, body: mock_response.to_json)
   end
-  
+
   it "processes payment" do
     # Test implementation
   end
@@ -374,7 +378,7 @@ Use environment variables for sensitive data:
 ## Support
 
 For development questions or issues:
+
 - Check existing issues on GitHub
 - Review documentation
 - Contact the development team
-
