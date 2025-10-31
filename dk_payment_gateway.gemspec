@@ -5,18 +5,18 @@ require_relative "lib/dk_payment_gateway/version"
 Gem::Specification.new do |spec|
   spec.name = "dk_payment_gateway"
   spec.version = DkPaymentGateway::VERSION
-  spec.authors = ["Your Name"]
-  spec.email = ["your.email@example.com"]
+  spec.authors = ["Tashi Dendup"]
+  spec.email = ["tashii.dendupp@gmail.com"]
 
   spec.summary = "Ruby client for DK Payment Gateway API"
   spec.description = "A Ruby gem for integrating with Digital Kidu Payment Gateway API, supporting pull payments, intra-bank transactions, QR generation, and transaction status verification."
-  spec.homepage = "https://github.com/yourusername/dk_payment_gateway"
+  spec.homepage = "https://github.com/dcplbt/dk_payment_gateway"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/yourusername/dk_payment_gateway"
-  spec.metadata["changelog_uri"] = "https://github.com/yourusername/dk_payment_gateway/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"] = "https://github.com/dcplbt/dk_payment_gateway"
+  spec.metadata["changelog_uri"] = "https://github.com/dcplbt/dk_payment_gateway/blob/main/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir.chdir(__dir__) do
@@ -38,4 +38,3 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "webmock", "~> 3.18"
   spec.add_development_dependency "vcr", "~> 6.1"
 end
-
