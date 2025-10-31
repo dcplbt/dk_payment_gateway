@@ -5,7 +5,7 @@ RSpec.describe DkPaymentGateway::Configuration do
 
   describe "#initialize" do
     it "sets default values" do
-      expect(config.base_url).to eq("http://internal-gateway.uat.digitalkidu.bt/api/dkpg")
+      expect(config.base_url).to eq("https://internal-gateway.uat.digitalkidu.bt/api/dkpg")
       expect(config.source_app).to eq("SRC_AVS_0201")
       expect(config.timeout).to eq(30)
       expect(config.open_timeout).to eq(10)

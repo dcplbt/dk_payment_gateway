@@ -37,4 +37,3 @@ RSpec.describe DkPaymentGateway do
     end
   end
 end
-

@@ -9,7 +9,7 @@ require 'dk_payment_gateway'
 
 # Configure the client
 DkPaymentGateway.configure do |config|
-  config.base_url = ENV['DK_BASE_URL'] || "http://internal-gateway.uat.digitalkidu.bt/api/dkpg"
+  config.base_url = ENV['DK_BASE_URL'] || "https://internal-gateway.uat.digitalkidu.bt/api/dkpg"
   config.api_key = ENV['DK_API_KEY']
   config.username = ENV['DK_USERNAME']
   config.password = ENV['DK_PASSWORD']
