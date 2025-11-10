@@ -17,6 +17,7 @@ GEM
       bigdecimal
       rexml
     diff-lcs (1.6.2)
+    dotenv (3.1.8)
     faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -88,6 +89,7 @@ PLATFORMS
 
 DEPENDENCIES
   dk_payment_gateway!
+  dotenv (>= 3.1.8)
   rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (~> 1.21)

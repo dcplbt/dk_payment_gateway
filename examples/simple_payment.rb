@@ -9,7 +9,7 @@ require 'dk_payment_gateway'
 
 # Configure the client
 DkPaymentGateway.configure do |config|
-  config.base_url = ENV['DK_BASE_URL'] || 'https://internal-gateway.uat.digitalkidu.bt'
+  config.base_url = ENV['DK_BASE_URL'] || 'https://internal-gateway.uat.digitalkidu.bt/api/dkpg'
   config.api_key = ENV['DK_API_KEY']
   config.username = ENV['DK_USERNAME']
   config.password = ENV['DK_PASSWORD']
@@ -81,7 +81,7 @@ def main
       bfs_remitter_otp: otp
     )
 
-    if debit_response['code'] == '00'
+    if debit_response['code'] == '0000'
       puts '✓ Payment completed successfully!'
       puts "  Transaction ID: #{debit_response['bfs_txn_id']}"
       puts "  Status: #{debit_response['description']}"

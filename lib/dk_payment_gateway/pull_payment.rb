@@ -9,7 +9,7 @@ module DkPaymentGateway
     end
 
     # Payment Gateway Authorization (Account inquiry and OTP request)
-    # 
+    #
     # @param params [Hash] Authorization parameters
     # @option params [String] :transaction_datetime Transaction timestamp in UTC (ISO 8601)
     # @option params [String] :stan_number 12-digit unique transaction number
@@ -27,18 +27,18 @@ module DkPaymentGateway
     # @return [Hash] Response containing bfs_txn_id, stan_number, account_number, remitter_account_number
     def authorize(params)
       validate_authorization_params!(params)
-      
+
       request_body = build_authorization_body(params)
       signature_headers = generate_signature_headers(request_body)
 
       response = client.post(
-        "/v1/account_auth/pull-payment",
-        body: request_body,
+        '/v1/account_auth/pull-payment',
+        body: request_body.to_json,
         headers: signature_headers
       )
 
-      validate_response!(response, "Authorization")
-      response["response_data"]
+      validate_response!(response, 'Authorization')
+      response['response_data']
     end
 
     # Payment Gateway Debit Request
@@ -53,18 +53,18 @@ module DkPaymentGateway
     # @return [Hash] Response containing bfs_txn_id, code, description
     def debit(params)
       validate_debit_params!(params)
-      
+
       request_body = build_debit_body(params)
       signature_headers = generate_signature_headers(request_body)
 
       response = client.post(
-        "/v1/debit_request/pull-payment",
-        body: request_body,
+        '/v1/debit_request/pull-payment',
+        body: request_body.to_json,
         headers: signature_headers
       )
 
-      validate_response!(response, "Debit")
-      response["response_data"]
+      validate_response!(response, 'Debit')
+      response['response_data']
     end
 
     # Generate STAN number
@@ -73,14 +73,14 @@ module DkPaymentGateway
     # @return [String] 12-digit STAN number
     def self.generate_stan(source_app_suffix, transaction_identifier = nil)
       suffix = source_app_suffix.to_s[-4..]
-      
+
       identifier = if transaction_identifier
-        transaction_identifier.to_s[-8..]
-      else
-        # Generate from current timestamp (HHMMSSMS format)
-        time = Time.now
-        format("%02d%02d%02d%02d", time.hour, time.min, time.sec, time.usec / 10000)
-      end
+                     transaction_identifier.to_s[-8..]
+                   else
+                     # Generate from current timestamp (HHMMSSMS format)
+                     time = Time.now
+                     format('%02d%02d%02d%02d', time.hour, time.min, time.sec, time.usec / 10_000)
+                   end
 
       "#{suffix}#{identifier}"
     end
@@ -116,40 +116,39 @@ module DkPaymentGateway
     end
 
     def validate_authorization_params!(params)
-      required = [:transaction_datetime, :stan_number, :transaction_amount, :payment_desc,
-                  :account_number, :account_name, :phone_number, :remitter_account_number,
-                  :remitter_account_name, :remitter_bank_id]
-      
+      required = %i[transaction_datetime stan_number transaction_amount payment_desc
+                    account_number account_name phone_number remitter_account_number
+                    remitter_account_name remitter_bank_id]
+
       missing = required.select { |key| params[key].nil? || params[key].to_s.empty? }
-      
+
       raise InvalidParameterError, "Missing required parameters: #{missing.join(', ')}" unless missing.empty?
     end
 
     def validate_debit_params!(params)
-      required = [:request_id, :bfs_txn_id, :bfs_remitter_otp]
-      
+      required = %i[request_id bfs_txn_id bfs_remitter_otp]
+
       missing = required.select { |key| params[key].nil? || params[key].to_s.empty? }
-      
+
       raise InvalidParameterError, "Missing required parameters: #{missing.join(', ')}" unless missing.empty?
     end
 
     def validate_response!(response, operation)
-      unless response.is_a?(Hash) && response["response_code"] == "0000"
-        error_msg = response["response_description"] || response["response_message"] || "Unknown error"
-        raise TransactionError.new(
-          "#{operation} failed: #{error_msg}",
-          response_code: response["response_code"],
-          response_message: response["response_message"],
-          response_description: response["response_description"]
-        )
-      end
+      return if response.is_a?(Hash) && response['response_code'] == '0000'
+
+      error_msg = response['response_description'] || response['response_message'] || 'Unknown error'
+      raise TransactionError.new(
+        "#{operation} failed: #{error_msg}",
+        response_code: response['response_code'],
+        response_message: response['response_message'],
+        response_description: response['response_description']
+      )
     end
 
     def generate_signature_headers(request_body)
-      raise SignatureError, "Private key not available. Call client.authenticate! first" unless client.private_key
-      
+      raise SignatureError, 'Private key not available. Call client.authenticate! first' unless client.private_key
+
       Signature.generate(client.private_key, request_body)
     end
   end
 end
-

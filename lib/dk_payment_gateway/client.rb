@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "faraday"
-require "json"
+require 'faraday'
+require 'json'
 
 module DkPaymentGateway
   class Client
@@ -17,8 +17,8 @@ module DkPaymentGateway
     # Authentication methods
     def authenticate!
       auth = Authentication.new(self)
-      @access_token = auth.fetch_token
-      @private_key = auth.fetch_private_key
+      @access_token ||= auth.fetch_token
+      @private_key ||= auth.fetch_private_key
       self
     end
 
@@ -54,19 +54,19 @@ module DkPaymentGateway
     private
 
     def validate_configuration!
-      raise ConfigurationError, "Configuration is required" if config.nil?
-      unless config.valid?
-        raise ConfigurationError, "Missing required configuration fields: #{config.missing_fields.join(', ')}"
-      end
+      raise ConfigurationError, 'Configuration is required' if config.nil?
+      return if config.valid?
+
+      raise ConfigurationError, "Missing required configuration fields: #{config.missing_fields.join(', ')}"
     end
 
     def request(method, path, body: {}, params: {}, headers: {}, skip_auth: false)
       url = "#{config.base_url}#{path}"
-      
+
       response = connection.send(method) do |req|
-        req.url path
+        req.url url
         req.headers = build_headers(headers, skip_auth)
-        req.body = body.to_json if method == :post && !body.empty?
+        req.body = body if method == :post && !body.empty?
         req.params = params if method == :get && !params.empty?
       end
 
@@ -77,7 +77,7 @@ module DkPaymentGateway
 
     def connection
       @connection ||= Faraday.new(url: config.base_url) do |conn|
-        conn.request :json
+        conn.request :url_encoded
         conn.response :json, content_type: /\bjson$/
         conn.adapter Faraday.default_adapter
         conn.options.timeout = config.timeout
@@ -87,13 +87,13 @@ module DkPaymentGateway
 
     def build_headers(custom_headers = {}, skip_auth = false)
       headers = {
-        "Content-Type" => "application/json",
-        "X-gravitee-api-key" => config.api_key
+        'Content-Type' => 'application/json',
+        'X-gravitee-api-key' => config.api_key
       }
 
       unless skip_auth
-        headers["Authorization"] = "Bearer #{access_token}" if access_token
-        headers["source_app"] = config.source_app
+        headers['Authorization'] = "Bearer #{access_token}" if access_token
+        headers['source_app'] = config.source_app
       end
 
       headers.merge(custom_headers)
@@ -114,26 +114,25 @@ module DkPaymentGateway
 
     def handle_client_error(response)
       body = response.body || {}
-      error_message = body["response_message"] || body["response_detail"] || "Client error"
-      
+      error_message = body['response_message'] || body['response_detail'] || 'Client error'
+
       raise InvalidParameterError.new(
         error_message,
-        response_code: body["response_code"],
-        response_detail: body["response_detail"]
+        response_code: body['response_code'],
+        response_detail: body['response_detail']
       )
     end
 
     def handle_server_error(response)
       body = response.body || {}
-      error_message = body["response_description"] || body["response_message"] || "Server error"
-      
+      error_message = body['response_description'] || body['response_message'] || 'Server error'
+
       raise APIError.new(
         error_message,
-        response_code: body["response_code"],
-        response_message: body["response_message"],
-        response_description: body["response_description"]
+        response_code: body['response_code'],
+        response_message: body['response_message'],
+        response_description: body['response_description']
       )
     end
   end
 end
-

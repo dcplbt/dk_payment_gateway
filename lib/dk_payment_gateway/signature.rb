@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "jwt"
-require "base64"
-require "json"
-require "time"
-require "securerandom"
+require 'jwt'
+require 'base64'
+require 'json'
+require 'time'
+require 'securerandom'
 
 module DkPaymentGateway
   class Signature
@@ -22,9 +22,9 @@ module DkPaymentGateway
       signature = sign_request(request_body, timestamp, nonce)
 
       {
-        "DK-Signature" => "DKSignature #{signature}",
-        "DK-Timestamp" => timestamp,
-        "DK-Nonce" => nonce
+        'DK-Signature' => "DKSignature #{signature}",
+        'DK-Timestamp' => timestamp,
+        'DK-Nonce' => nonce
       }
     end
 
@@ -32,7 +32,7 @@ module DkPaymentGateway
 
     # Generate ISO 8601 timestamp
     def generate_timestamp
-      Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+      Time.now.utc.strftime('%Y-%m-%dT%H:%M:%SZ')
     end
 
     # Generate unique alphanumeric nonce
@@ -43,21 +43,21 @@ module DkPaymentGateway
     # Sign the request using RS256 algorithm
     def sign_request(request_body, timestamp, nonce)
       # Serialize request body to canonical JSON (sorted keys, no spaces)
-      request_body_str = JSON.generate(request_body, space: "", object_nl: "", array_nl: "")
-      
+      request_body_str = JSON.generate(request_body, space: '', object_nl: '', array_nl: '')
+
       # Base64 encode the request body
       body_base64 = Base64.strict_encode64(request_body_str)
 
       # Create the payload for signing
       token_payload = {
-        "data" => body_base64,
-        "timestamp" => timestamp,
-        "nonce" => nonce
+        'data' => body_base64,
+        'timestamp' => timestamp,
+        'nonce' => nonce
       }
 
       # Sign using RS256
-      JWT.encode(token_payload, OpenSSL::PKey::RSA.new(private_key), "RS256")
-    rescue => e
+      JWT.encode(token_payload, OpenSSL::PKey::RSA.new(private_key), 'RS256')
+    rescue StandardError => e
       raise SignatureError, "Failed to generate signature: #{e.message}"
     end
 
@@ -69,4 +69,3 @@ module DkPaymentGateway
     end
   end
 end
-

@@ -20,7 +20,7 @@ module DkPaymentGateway
   class APIError < Error
     attr_reader :response_code, :response_message, :response_description, :response_detail
 
-    def initialize(message, response_code: nil, response_message: nil, 
+    def initialize(message, response_code: nil, response_message: nil,
                    response_description: nil, response_detail: nil)
       super(message)
       @response_code = response_code
@@ -36,4 +36,3 @@ module DkPaymentGateway
 
   class TransactionError < APIError; end
 end
-

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'dotenv/load' # Load environment variables
+
 module DkPaymentGateway
   class Configuration
     attr_accessor :base_url, :api_key, :username, :password, :client_id,
