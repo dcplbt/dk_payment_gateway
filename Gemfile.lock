@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dk_payment_gateway (1.0.0)
+    dk_payment_gateway (1.0.1)
       faraday (~> 2.0)
       jwt (~> 2.7)
 

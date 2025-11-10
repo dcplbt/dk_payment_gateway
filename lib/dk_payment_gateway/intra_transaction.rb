@@ -29,7 +29,7 @@ module DkPaymentGateway
 
       response = client.post(
         '/v1/beneficiary/account_inquiry',
-        body: request_body,
+        body: request_body.to_json,
         headers: signature_headers
       )
 
@@ -64,7 +64,7 @@ module DkPaymentGateway
 
       response = client.post(
         '/v1/initiate/transaction',
-        body: request_body,
+        body: request_body.to_json,
         headers: signature_headers
       )
 

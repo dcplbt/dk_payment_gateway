@@ -30,7 +30,7 @@ module DkPaymentGateway
 
       response = client.post(
         '/v1/generate_qr',
-        body: request_body,
+        body: request_body.to_json,
         headers: signature_headers
       )
 
